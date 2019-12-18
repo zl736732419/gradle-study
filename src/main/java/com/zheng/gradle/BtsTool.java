@@ -38,18 +38,25 @@ public class BtsTool extends FileHandler {
     private BufferedWriter destOuter;
     private BufferedWriter uniqueCookieDestOuter;
     
+    // 总请求数
     private long count;
-    // identify去重后的计数
-    private long collapseCount;
-    // idnetify为空的计数
+    // identify为空
     private long identifyNullCount;
-    // identify cookie为空的计数
+    // identify cookie为空
     private long identifyCookieNullCount;
-    // bts生成的cookie计数
-    private long btsCreatedUniqueCount;
+    
+    
+    // 传给算法去重后的identify
+    private long aiIdentifyCollapseCount;
+    // 传给算法去重后的cookie
+    private long aiCookieCollapseCount;
+    // bts生成的cookie
+    private long btsCreatedCookieCount;
+
+    // identify去重
     private Set<String> identifySet = new HashSet<>();
     // bts cookie去重
-    private Set<String> btsCookieSet = new HashSet<>();
+    private Set<String> aiCookieSet = new HashSet<>();
 
     @Override
     protected void init() {
@@ -83,11 +90,14 @@ public class BtsTool extends FileHandler {
 
     @Override
     protected void after() {
+        
         System.out.println("总请求结果数: " + count);
-        System.out.println("根据用户请求identify去重后的结果数: " + collapseCount);
-        System.out.println("用户请求identify为空的结果数: " + identifyNullCount);
-        System.out.println("用户请求identify，cookie都为空的结果数: " + identifyCookieNullCount);
-        System.out.println("bts新生成的cookie结果数: " + btsCreatedUniqueCount);
+        System.out.println("请求参数identify为空结果数: " + identifyNullCount);
+        System.out.println("bts生成的cookie结果数: " + btsCreatedCookieCount);
+        System.out.println("请求参数identify,cookie都为空结果数: " + identifyCookieNullCount);
+        
+        System.out.println("搜索传给算法去重后的identify结果数: " + aiIdentifyCollapseCount);
+        System.out.println("搜索传给算法去重后的cookie结果数: " + aiCookieCollapseCount);
         
         try {
             destOuter.close();
@@ -162,14 +172,36 @@ public class BtsTool extends FileHandler {
             if (StringUtils.isEmpty(cookie)) {
                 identifyCookieNullCount++;
             }
-        }
-        if(identifySet.add(identify)) {
-            collapseCount++;
-            printLine(builder.toString(), uniqueCookieDestOuter);
+            
+            if (StringUtils.isNotEmpty(btsResponseCookie)) {
+                btsCreatedCookieCount++;
+                if (identifySet.add(btsResponseCookie)) {
+                    aiIdentifyCollapseCount++;
+                    printLine(builder.toString(), uniqueCookieDestOuter);
+                }
+                if (StringUtils.isEmpty(cookie)) {
+                    if (aiCookieSet.add(btsResponseCookie)) {
+                        aiCookieCollapseCount++;
+                    }
+                }
+                
+            }
+        } else {
+            if (identifySet.add(identify)) {
+                aiIdentifyCollapseCount++;
+                printLine(builder.toString(), uniqueCookieDestOuter);
+            }
+            if (StringUtils.isEmpty(cookie)) {
+                if (aiCookieSet.add(btsResponseCookie)) {
+                    aiCookieCollapseCount++;
+                }
+            }
         }
         
-        if (StringUtils.isEmpty(btsRequestCookie) && btsResponseCookie.startsWith("bts") && btsCookieSet.add(btsResponseCookie)) {
-            btsCreatedUniqueCount++;
+        if (StringUtils.isNotEmpty(cookie)) {
+            if (aiCookieSet.add(btsResponseCookie)) {
+                aiCookieCollapseCount++;
+            }
         }
     }
 
