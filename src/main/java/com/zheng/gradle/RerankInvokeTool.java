@@ -13,7 +13,6 @@ import java.io.File;
  *  rerank耗时统计文件处理工具
  *  文件内容格式：
  *  total:226, error:0, totalTime:5,309ms, qps:1, avgTime:23, maxElapseTime:74
- *  total:313, error:0, totalTime:2,029ms, qps:1, avgTime:6, maxElapseTime:70
  *  
  *
  *  Revision History
