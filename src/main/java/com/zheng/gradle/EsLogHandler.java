@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  *
  * </pre>
  */
-public class EsLogTool extends FileHandler {
+public class EsLogHandler extends FileHandler {
     private PrintWriter writer;
     private Pattern tokePattern = Pattern.compile("^\\d+(\\.\\d+)?s$");
     
@@ -64,7 +64,7 @@ public class EsLogTool extends FileHandler {
     }
     
     public static void main(String[] args) throws Exception {
-        new EsLogTool().handle();
+        new EsLogHandler().handle();
 //        boolean result = new EsLogTool().tokePattern.matcher("123.25ms").matches();
 //        System.out.println(result);
     }

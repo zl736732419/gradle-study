@@ -29,7 +29,7 @@ import java.util.Set;
  *
  * </pre>
  */
-public class BtsTool extends FileHandler {
+public class BtsHandler extends FileHandler {
     private static ObjectMapper objectMapper = new ObjectMapper();
     
     private File dest = new File("C:\\Users\\Administrator\\Desktop\\bts_all_out.txt");
@@ -223,6 +223,6 @@ public class BtsTool extends FileHandler {
     }
 
     public static void main(String[] args) throws Exception {
-        new BtsTool().handle();
+        new BtsHandler().handle();
     }
 }
