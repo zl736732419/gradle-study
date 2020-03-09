@@ -70,7 +70,7 @@ public abstract class FileHandler {
             if (null == line || Objects.equals(0, line.length())) {
                 continue;
             }
-            handleLine(line);
+            handleLine(line.trim());
         }
         
         reader.close();
