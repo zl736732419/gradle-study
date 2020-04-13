@@ -77,7 +77,7 @@ public abstract class FileHandler {
     }
 
     protected abstract String getDir();
-    protected abstract void beforeFileHandle(File file);
-    protected abstract void afterFileHandle(File file);
+    protected void beforeFileHandle(File file) {}
+    protected void afterFileHandle(File file) {}
     protected abstract void handleLine(String line);
 }

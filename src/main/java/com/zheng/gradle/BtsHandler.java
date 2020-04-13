@@ -58,6 +58,9 @@ public class BtsHandler extends FileHandler {
     private Set<String> identifySet = new HashSet<>();
     // bts cookie去重
     private Set<String> aiCookieSet = new HashSet<>();
+    
+    private String cookieName = "cookieNew";
+    
 
     @Override
     protected void init() {
@@ -134,13 +137,19 @@ public class BtsHandler extends FileHandler {
             domain = parseJsonField("domain", node);
             agent = parseJsonField("agent", node);
             identify = parseJsonField("identify", node);
-            cookie = parseJsonField("cookie", node);
+            cookie = parseJsonField(cookieName, node);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        arr = arr[1].split("BtsRequest\\(cookie=");
-        int btsCookieEndIndex = arr[1].indexOf(",");
+        // 统计cookieNew
+        arr = arr[1].split(cookieName+"=");
+        int btsCookieEndIndex = arr[1].indexOf("),");
+
+        // 统计cookie
+//        arr = arr[1].split("BtsRequest\\(cookie=");
+//        int btsCookieEndIndex = arr[1].indexOf(",");
+        
         String btsRequestCookie = arr[1].substring(0, btsCookieEndIndex);
         
         arr = arr[1].split("return response ");
@@ -193,6 +202,7 @@ public class BtsHandler extends FileHandler {
                 printLine(builder.toString(), uniqueCookieDestOuter);
             }
             if (StringUtils.isEmpty(cookie)) {
+                System.out.println("cookie is null use " + btsResponseCookie);
                 if (aiCookieSet.add(btsResponseCookie)) {
                     aiCookieCollapseCount++;
                 }
@@ -200,7 +210,7 @@ public class BtsHandler extends FileHandler {
         }
         
         if (StringUtils.isNotEmpty(cookie)) {
-            if (aiCookieSet.add(btsResponseCookie)) {
+            if (aiCookieSet.add(cookie)) {
                 aiCookieCollapseCount++;
             }
         }
